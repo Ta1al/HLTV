@@ -56,11 +56,12 @@ export interface GetResultsArguments {
   game?: GameType
   stars?: 1 | 2 | 3 | 4 | 5
   delayBetweenPageRequests?: number
+  pages?: number
 }
 
 export const getResults =
   (config: HLTVConfig) =>
-  async (options: GetResultsArguments): Promise<FullMatchResult[]> => {
+  async (options: GetResultsArguments = {}): Promise<FullMatchResult[]> => {
     const query = stringify({
       ...(options.startDate ? { startDate: options.startDate } : {}),
       ...(options.endDate ? { endDate: options.endDate } : {}),
@@ -141,7 +142,7 @@ export const getResults =
           })
           .filter(notNull)
       )
-    } while ($('.result-con').exists())
+    } while ($('.result-con').exists() && page < (options.pages || 0))
 
     return results
   }
